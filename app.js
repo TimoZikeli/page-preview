@@ -11,21 +11,26 @@ http.createServer(function (req, res) {
     const height = +request.query.height || 600;
     const url = request.query.url || 'about:blank';
     (async () => {
-        const browser = await puppeteer.launch({
-            args: [
-                `--window-size=${width},${height}`
-            ]
-        });
-        const page = await browser.newPage();
-        page.setViewport({
-            width: width,
-            height: height
-        });
-        await page.goto(url);
-        const image = await page.screenshot();
-        await browser.close();
-        res.writeHead(200, {'Content-Type': 'image/png'});
-        res.end(image, 'binary');
+        try {
+            const browser = await puppeteer.launch({
+                args: [
+                    `--window-size=${width},${height}`
+                ]
+            });
+            const page = await browser.newPage();
+            page.setViewport({
+                width: width,
+                height: height
+            });
+            await page.goto(url);
+            const image = await page.screenshot();
+            await browser.close();
+            res.writeHead(200, {'Content-Type': 'image/png'});
+            res.end(image, 'binary');
+        } catch (err) {
+            console.error(`Error (URL: '${req.url}')`)
+            console.error(err);
+        }
     })();
 }).listen(process.env.PORT || 4444, process.env.host || '0.0.0.0');
 
