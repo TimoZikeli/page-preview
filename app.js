@@ -30,6 +30,7 @@ http.createServer(function (req, res) {
         } catch (err) {
             console.error(`Error (URL: '${req.url}')`)
             console.error(err);
+            res.end();
         }
     })();
 }).listen(process.env.PORT || 4444, process.env.host || '0.0.0.0');
