@@ -1,0 +1,11 @@
+{
+  "name": "page-preview",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "puppeteer": "^1.6.1"
+  }
+}
