@@ -10,9 +10,10 @@ http.createServer(function (req, res) {
     const width = +request.query.width || 800;
     const height = +request.query.height || 600;
     const url = request.query.url || 'about:blank';
+    let browser;
     (async () => {
         try {
-            const browser = await puppeteer.launch({
+            browser = await puppeteer.launch({
                 args: [
                     `--window-size=${width},${height}`
                 ]
@@ -24,13 +25,14 @@ http.createServer(function (req, res) {
             });
             await page.goto(url);
             const image = await page.screenshot();
-            await browser.close();
             res.writeHead(200, {'Content-Type': 'image/png'});
             res.end(image, 'binary');
         } catch (err) {
             console.error(`Error (URL: '${req.url}')`)
             console.error(err);
             res.end();
+        } finally {
+            await browser.close();
         }
     })();
 }).listen(process.env.PORT || 4444, process.env.host || '0.0.0.0');
