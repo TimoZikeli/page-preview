@@ -19,6 +19,7 @@ Just call the url with the wanted parameters, and you will get a **PNG** image o
 - **url**: The page of which a screenshot shall be taken
 - **width**: The browser's/image's width (default: 800)
 - **height**: The browser's/image's height (default: 600)
+- **loadingTime**: How long to wait for the website to load, in milliseconds (optional)
 
 ### Example
 ```http://localhost:4444/?url=https://github.com&width=1920&height=1080```

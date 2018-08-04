@@ -4,12 +4,17 @@ var fs = require('fs');
 var http = require('http');
 var urlModule = require('url');
 
+async function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 http.createServer(function (req, res) {
     var request = urlModule.parse(req.url, true);
     var action = request.pathname;
     const width = +request.query.width || 800;
     const height = +request.query.height || 600;
     const url = request.query.url || 'about:blank';
+    const loadingTime = request.query.loadingTime || 0;
     let browser;
     (async () => {
         try {
@@ -24,6 +29,7 @@ http.createServer(function (req, res) {
                 height: height
             });
             await page.goto(url);
+            if (loadingTime > 0) await timeout(loadingTime);
             const image = await page.screenshot();
             res.writeHead(200, {'Content-Type': 'image/png'});
             res.end(image, 'binary');
