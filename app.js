@@ -1,16 +1,16 @@
 const puppeteer = require('puppeteer');
 
-var fs = require('fs');
-var http = require('http');
-var urlModule = require('url');
+const fs = require('fs');
+const http = require('http');
+const urlModule = require('url');
 
 async function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 http.createServer(function (req, res) {
-    var request = urlModule.parse(req.url, true);
-    var action = request.pathname;
+    const request = urlModule.parse(req.url, true);
+    const action = request.pathname;
     const width = +request.query.width || 800;
     const height = +request.query.height || 600;
     const url = request.query.url || 'about:blank';
@@ -19,8 +19,11 @@ http.createServer(function (req, res) {
     (async () => {
         try {
             browser = await puppeteer.launch({
+                ignoreHTTPSErrors: true,
                 args: [
-                    `--window-size=${width},${height}`
+                    `--window-size=${width},${height}`,
+                    '--ignore-certificate-errors',
+                    '--ignore-certificate-errors-spki-list '
                 ]
             });
             const page = await browser.newPage();
@@ -34,7 +37,7 @@ http.createServer(function (req, res) {
             res.writeHead(200, {'Content-Type': 'image/png'});
             res.end(image, 'binary');
         } catch (err) {
-            console.error(`Error (URL: '${req.url}')`)
+            console.error(`Error (URL: '${req.url}')`);
             console.error(err);
             res.end();
         } finally {
